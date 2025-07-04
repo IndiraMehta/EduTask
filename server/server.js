@@ -32,6 +32,6 @@ app.get('/', (req, res) => {
   res.json({ message: 'Assignment Portal API is running!' });
 });
 
-app.listen(PORT, () => {
+app.listen(5000, () => {
   console.log(`Server running on port ${PORT}`);
 });
