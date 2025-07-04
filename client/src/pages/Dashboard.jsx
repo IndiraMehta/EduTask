@@ -5,6 +5,28 @@ import Header from '../components/Header';
 import { BookOpen, Calendar, Clock, FileText, Users, TrendingUp } from 'lucide-react';
 
 const Dashboard = () => {
+
+  const [posts, setPosts] = useState([]);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    const baseURL = import.meta.env.VITE_API_BASE_URL;
+
+    const fetchData = async () => {
+      try {
+        const res = await fetch(`${baseURL}/api/posts`);
+        if (!res.ok) throw new Error('Failed to fetch');
+        const data = await res.json();
+        setPosts(data);
+      } catch (err) {
+        setError('Backend server not running or API error.');
+        console.error(err);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   const { userProfile } = useAuth();
   const [stats, setStats] = useState({
     assignments: 0,
@@ -55,141 +77,6 @@ const Dashboard = () => {
   );
 
   return (
-  //   <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
-  //     <Header />
-      
-  //     <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-  //       <div className="mb-8">
-  //         <h1 className="text-3xl font-bold text-gray-900">
-  //           Welcome back, {userProfile?.name}!
-  //         </h1>
-  //         <p className="text-gray-600 mt-2">
-  //           {userProfile?.role === 'teacher' ? 'Manage your classes and assignments' : 'Track your progress and assignments'}
-  //         </p>
-  //         <div className="flex items-center space-x-2 mt-2">
-  //           <span className="px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-full">
-  //             {userProfile?.branch}
-  //           </span>
-  //           <span className="px-3 py-1 bg-purple-100 text-purple-800 text-sm rounded-full">
-  //             {userProfile?.year} Year
-  //           </span>
-  //         </div>
-  //       </div>
-
-  //       {/* Stats Grid */}
-  //       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-  //         <StatCard
-  //           icon={BookOpen}
-  //           title="Total Assignments"
-  //           value={stats.assignments}
-  //           color="bg-gradient-to-r from-blue-500 to-blue-600"
-  //         />
-  //         <StatCard
-  //           icon={Calendar}
-  //           title="Upcoming Tests"
-  //           value={stats.tests}
-  //           color="bg-gradient-to-r from-purple-500 to-purple-600"
-  //         />
-  //         {userProfile?.role === 'student' && (
-  //           <>
-  //             <StatCard
-  //               icon={FileText}
-  //               title="Submissions"
-  //               value={stats.submissions}
-  //               color="bg-gradient-to-r from-green-500 to-green-600"
-  //             />
-  //             <StatCard
-  //               icon={Clock}
-  //               title="Pending"
-  //               value={stats.pending}
-  //               color="bg-gradient-to-r from-orange-500 to-orange-600"
-  //             />
-  //           </>
-  //         )}
-  //         {userProfile?.role === 'teacher' && (
-  //           <>
-  //             <StatCard
-  //               icon={Users}
-  //               title="Students"
-  //               value="42"
-  //               color="bg-gradient-to-r from-green-500 to-green-600"
-  //             />
-  //             <StatCard
-  //               icon={TrendingUp}
-  //               title="Avg Score"
-  //               value="85%"
-  //               color="bg-gradient-to-r from-orange-500 to-orange-600"
-  //             />
-  //           </>
-  //         )}
-  //       </div>
-
-  //       {/* Content Grid */}
-  //       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-  //         {/* Recent Assignments */}
-  //         <div className="bg-white/80 backdrop-blur-sm p-6 rounded-2xl shadow-lg border border-white/20">
-  //           <div className="flex items-center justify-between mb-6">
-  //             <h2 className="text-xl font-bold text-gray-900">Recent Assignments</h2>
-  //             <BookOpen className="w-5 h-5 text-blue-600" />
-  //           </div>
-            
-  //           <div className="space-y-4">
-  //             {recentAssignments.length > 0 ? (
-  //               recentAssignments.map((assignment, index) => (
-  //                 <div key={index} className="p-4 bg-gray-50/50 rounded-lg border border-gray-100 hover:bg-gray-50 transition-colors">
-  //                   <h3 className="font-medium text-gray-900">{assignment.title}</h3>
-  //                   <p className="text-sm text-gray-600 mt-1">{assignment.description}</p>
-  //                   <div className="flex items-center justify-between mt-3">
-  //                     <span className="text-xs text-gray-500">
-  //                       Due: {new Date(assignment.deadline).toLocaleDateString()}
-  //                     </span>
-  //                     <span className={`px-2 py-1 text-xs rounded-full ${
-  //                       assignment.submitted 
-  //                         ? 'bg-green-100 text-green-800' 
-  //                         : 'bg-orange-100 text-orange-800'
-  //                     }`}>
-  //                       {assignment.submitted ? 'Submitted' : 'Pending'}
-  //                     </span>
-  //                   </div>
-  //                 </div>
-  //               ))
-  //             ) : (
-  //               <p className="text-gray-500 text-center py-8">No recent assignments</p>
-  //             )}
-  //           </div>
-  //         </div>
-
-  //         {/* Upcoming Tests */}
-  //         <div className="bg-white/80 backdrop-blur-sm p-6 rounded-2xl shadow-lg border border-white/20">
-  //           <div className="flex items-center justify-between mb-6">
-  //             <h2 className="text-xl font-bold text-gray-900">Upcoming Tests</h2>
-  //             <Calendar className="w-5 h-5 text-purple-600" />
-  //           </div>
-            
-  //           <div className="space-y-4">
-  //             {upcomingTests.length > 0 ? (
-  //               upcomingTests.map((test, index) => (
-  //                 <div key={index} className="p-4 bg-gray-50/50 rounded-lg border border-gray-100 hover:bg-gray-50 transition-colors">
-  //                   <h3 className="font-medium text-gray-900">{test.subject}</h3>
-  //                   <p className="text-sm text-gray-600 mt-1">{test.description}</p>
-  //                   <div className="flex items-center justify-between mt-3">
-  //                     <span className="text-xs text-gray-500">
-  //                       Date: {new Date(test.date).toLocaleDateString()}
-  //                     </span>
-  //                     <span className="px-2 py-1 bg-purple-100 text-purple-800 text-xs rounded-full">
-  //                       {test.branch} - {test.year}
-  //                     </span>
-  //                   </div>
-  //                 </div>
-  //               ))
-  //             ) : (
-  //               <p className="text-gray-500 text-center py-8">No upcoming tests</p>
-  //             )}
-  //           </div>
-  //         </div>
-  //       </div>
-  //     </main>
-  //   </div>
 
     <div className="min-h-screen bg-black">
       {/* Animated background elements */}
